@@ -1,5 +1,6 @@
 package ru.practicum.dinner;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -37,11 +38,10 @@ public class Main {
 
     private static void addNewDish() {
         System.out.println("Введите тип блюда:");
-        String dishType = scanner.nextLine();
+        String dishType = scanner.nextLine().trim().toUpperCase();
         System.out.println("Введите название блюда:");
-        String dishName = scanner.nextLine();
-
-        // добавьте новое блюдо
+        String dishName = scanner.nextLine().trim();
+        dc.saveDishes(dishType, dishName);
     }
 
     private static void generateDishCombo() {
@@ -50,16 +50,25 @@ public class Main {
         System.out.println("Введите количество наборов, которые нужно сгенерировать:");
         int numberOfCombos = scanner.nextInt();
         scanner.nextLine();
+        if (numberOfCombos != 0) {
 
-        System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). Для завершения ввода введите пустую строку");
-        String nextItem = scanner.nextLine();
+            System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). Для завершения ввода введите пустую строку");
+            String nextItem = scanner.nextLine().trim().toUpperCase();
+            ArrayList<String> dishTypes = new ArrayList<>();
 
-        //реализуйте ввод типов блюд
-        while (!nextItem.isEmpty()) {
-
+            while (!nextItem.isEmpty()) {
+                boolean typeExist = dc.checkType(nextItem);
+                if (typeExist) {
+                    dishTypes.add(nextItem);
+                    nextItem = scanner.nextLine().trim().toUpperCase();
+                } else {
+                    System.out.println("Такого типа блюда не существует");
+                    break;
+                }
+            }
+            dc.generateCombos(numberOfCombos, dishTypes);
+        } else {
+            System.out.println("Недопустимое значение!");
         }
-
-        // сгенерируйте комбинации блюд и выведите на экран
-
     }
 }
